@@ -146,7 +146,11 @@ export default function OrderManagement() {
 
   // Handle search
   const handleSearch = useCallback((filters: Record<string, string>) => {
-    setSearchFilters(filters);
+    // Filter out "all" values as they represent no filter
+    const cleanedFilters = Object.fromEntries(
+      Object.entries(filters).filter(([key, value]) => value !== "all" && value !== "")
+    );
+    setSearchFilters(cleanedFilters);
     setCurrentPage(1);
     setData([]);
     loadData(1, false);

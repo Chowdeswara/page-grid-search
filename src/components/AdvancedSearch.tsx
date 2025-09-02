@@ -33,16 +33,16 @@ export function AdvancedSearch({
   className = "" 
 }: AdvancedSearchProps) {
   const [filters, setFilters] = useState<Record<string, string>>({
-    orderType: "",
-    supplier: "",
-    supplierCustomerContract: "",
-    cluster: "",
-    customer: "",
+    orderType: "all",
+    supplier: "all",
+    supplierCustomerContract: "all",
+    cluster: "all",
+    customer: "all",
     customerSupplierRefNo: "",
     draftBillNo: "",
-    departurePoint: "",
-    arrivalPoint: "",
-    service: ""
+    departurePoint: "all",
+    arrivalPoint: "all",
+    service: "all"
   });
 
   const handleFilterChange = (key: string, value: string) => {
@@ -55,21 +55,21 @@ export function AdvancedSearch({
 
   const handleReset = () => {
     setFilters({
-      orderType: "",
-      supplier: "",
-      supplierCustomerContract: "",
-      cluster: "",
-      customer: "",
+      orderType: "all",
+      supplier: "all",
+      supplierCustomerContract: "all",
+      cluster: "all",
+      customer: "all",
       customerSupplierRefNo: "",
       draftBillNo: "",
-      departurePoint: "",
-      arrivalPoint: "",
-      service: ""
+      departurePoint: "all",
+      arrivalPoint: "all",
+      service: "all"
     });
     onReset?.();
   };
 
-  const defaultOptions = [{ value: "", label: "All" }];
+  const defaultOptions = [{ value: "all", label: "All" }];
 
   return (
     <Card className={`p-6 bg-card border-border ${className}`}>
