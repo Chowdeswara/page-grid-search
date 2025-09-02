@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { Search, Filter, X } from "lucide-react";
 import { SupplierCombobox } from "./SupplierCombobox";
+import { SearchableDropdown } from "./SearchableDropdown";
 
 interface FilterOption {
   value: string;
@@ -185,18 +186,19 @@ export function AdvancedSearch({
           {/* Departure Point */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Departure Point</label>
-            <Select value={filters.departurePoint} onValueChange={(value) => handleFilterChange("departurePoint", value)}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border">
-                {[...defaultOptions, ...(searchFilters.departurePoint || [])].map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SearchableDropdown
+              value={filters.departurePoint}
+              onValueChange={(value) => handleFilterChange("departurePoint", value)}
+              placeholder="Select Departure Point"
+              className="w-full"
+              apiPayload={{ method: "getDeparturePoints" }}
+              transformResponse={(data) => 
+                data.items?.map((item: any) => ({
+                  value: item.code || item.id,
+                  label: `${item.code} || ${item.name || item.description}`
+                })) || []
+              }
+            />
           </div>
 
           {/* Arrival Point */}
