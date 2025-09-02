@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Card } from "@/components/ui/card";
 import { Search, Filter, X } from "lucide-react";
+import { SupplierCombobox } from "./SupplierCombobox";
 
 interface FilterOption {
   value: string;
@@ -100,18 +101,12 @@ export function AdvancedSearch({
           {/* Supplier */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Supplier</label>
-            <Select value={filters.supplier} onValueChange={(value) => handleFilterChange("supplier", value)}>
-              <SelectTrigger className="bg-background">
-                <SelectValue placeholder="All" />
-              </SelectTrigger>
-              <SelectContent className="bg-popover border-border">
-                {[...defaultOptions, ...(searchFilters.supplier || [])].map((option) => (
-                  <SelectItem key={option.value} value={option.value}>
-                    {option.label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <SupplierCombobox
+              value={filters.supplier}
+              onValueChange={(value) => handleFilterChange("supplier", value)}
+              placeholder="All"
+              className="w-full"
+            />
           </div>
 
           {/* Supplier/Customer Contract */}
