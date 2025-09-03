@@ -33,7 +33,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
-      <BrowserRouter basename="/Forwardis-dev/">
+      <BrowserRouter>
         <Routes>
           {/* <Route path="/" element={<Index />} /> */}
           
