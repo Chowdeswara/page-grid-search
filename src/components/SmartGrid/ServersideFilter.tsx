@@ -9,7 +9,7 @@ import { GridColumnConfig, ServerFilter } from '@/types/smartgrid';
 import { FilterValue, FilterSet, FilterSystemAPI } from '@/types/filterSystem';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
-import { SearchableDropdown } from '@/components/SearchableDropdown';
+import { SearchableDropdown } from '@/components/Common/SearchableDropdown';
 import { quickOrderService } from '@/api/services'; // Import quickOrderService
 
 interface ServersideFilterProps {
@@ -327,10 +327,12 @@ export function ServersideFilter({
               {filter.label}
             </div>
             <SearchableDropdown
+              label={undefined} // Label is already rendered above
               placeholder={`Search ${filter.label}`}
               options={[]}
               value={pendingFilters[filter.key]?.value || ''}
               onValueChange={(val) => handleFilterChange(filter.key, val ? { type: 'select', value: val } : undefined)}
+              fetchOptions={fetchFilterOptions}
             />
             {pendingFilters[filter.key] && (
               <Button

@@ -56,17 +56,32 @@ export function useSearchableDropdown({
     setError(null);
     
     try {
-      const additionalFilters = [
-        ...(basePayload?.AdditionalFilter || []),
-        { FilterName: "PageNumber", FilterValue: Math.floor(offset / pageSize) + 1 },
-        { FilterName: "PageSize", FilterValue: pageSize },
-        ...(query ? [{ FilterName: "SearchTerm", FilterValue: query }] : []),
-      ];
+      // const stringifyData = JSON.stringify({
+      //   context: {
+      //     MessageID: "12345",
+      //     MessageType: "Supplier Init",
+      //     UserID: "ramcouser",
+      //     OUID: "4",
+      //     Role: "ramcorole",
+      //   },
+      //   AdditionalFilter: [],
+      //   ...basePayload,
+      //   pageSize,
+      //   pageOffset: offset,
+      //   ...(query && { searchQuery: query })
+      // });
+
+      // const requestBody = {
+      //   RequestData: stringifyData,
+      // };
 
       const params = {
         messageType: basePayload?.messageType || "Supplier Init",
-        searchTerm: query,
-        page: Math.floor(offset / pageSize) + 1,
+        filters: [
+          ...(basePayload?.AdditionalFilter || []),
+          ...(query ? [{ FilterName: "searchQuery", FilterValue: query }] : []),
+        ],
+        pageOffset: offset,
         pageSize: pageSize,
       };
 
