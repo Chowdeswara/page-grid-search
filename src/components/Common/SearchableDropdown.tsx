@@ -118,21 +118,21 @@ export const SearchableDropdown = ({
           </div>
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-full p-0 bg-popover border-border" align="start">
-        <Command className="bg-transparent">
+      <PopoverContent className="w-[300px] p-0 bg-background border z-50" align="start">
+        <Command className="bg-background">
           <CommandInput 
             placeholder="Search options..." 
             onValueChange={handleSearch}
-            className="bg-transparent"
+            className="bg-background"
           />
           <CommandList 
             ref={listRef}
             onScroll={handleScroll}
-            className="max-h-60 overflow-y-auto bg-transparent"
+            className="max-h-60 overflow-y-auto bg-background"
           >
             <CommandEmpty>
               {loading && !options.length ? (
-                <div className="flex items-center justify-center py-2 bg-transparent">
+                <div className="flex items-center justify-center py-2">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm text-muted-foreground">Loading options...</span>
                 </div>
@@ -140,16 +140,16 @@ export const SearchableDropdown = ({
                 "No option found."
               )}
             </CommandEmpty>
-            <CommandGroup className="bg-transparent">
+            <CommandGroup className="bg-background">
               {allOptions.map((option) => (
                 <CommandItem
                   key={option.value}
-                  value={option.value} // Use option.value directly here for cmDK, it expects a string for comparison
+                  value={option.value}
                   onSelect={(currentValue) => {
                     onValueChange(currentValue === value ? "" : currentValue);
                     setOpen(false);
                   }}
-                  className="bg-transparent hover:bg-accent"
+                  className="bg-background hover:bg-accent cursor-pointer"
                 >
                   <Check
                     className={cn(
@@ -161,7 +161,7 @@ export const SearchableDropdown = ({
                 </CommandItem>
               ))}
               {loading && hasMore && (
-                <div className="flex items-center justify-center py-2 bg-transparent">
+                <div className="flex items-center justify-center py-2">
                   <Loader2 className="h-4 w-4 animate-spin mr-2" />
                   <span className="text-sm text-muted-foreground">Loading more...</span>
                 </div>

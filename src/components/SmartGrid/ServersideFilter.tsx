@@ -327,12 +327,15 @@ export function ServersideFilter({
               {filter.label}
             </div>
             <SearchableDropdown
-              label={undefined} // Label is already rendered above
               placeholder={`Search ${filter.label}`}
-              options={[]}
               value={pendingFilters[filter.key]?.value || ''}
               onValueChange={(val) => handleFilterChange(filter.key, val ? { type: 'select', value: val } : undefined)}
-              fetchOptions={fetchFilterOptions}
+              apiPayload={{
+                messageType: "Filter Data",
+                AdditionalFilter: [
+                  { FilterName: "column", FilterValue: filter.key }
+                ]
+              }}
             />
             {pendingFilters[filter.key] && (
               <Button
