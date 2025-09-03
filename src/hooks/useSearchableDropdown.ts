@@ -1,4 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
+// import apiClient from '../lib/apiClient';
+import axios from 'axios'; // Added for axios error handling
+import { quickOrderService } from '../api/services/quickOrderService';
 
 interface DropdownOption {
   value: string;
@@ -41,7 +44,8 @@ export function useSearchableDropdown({
   const [currentQuery, setCurrentQuery] = useState('');
 
   const defaultTransform = (data: any): DropdownOption[] => {
-    return data.items?.map((item: any) => ({
+    const responseData = JSON.parse(data.ResponseData || '[]');
+    return responseData.map((item: any) => ({
       value: item.id || item.value || item.code,
       label: item.name || item.label || item.description || `${item.code} || ${item.name}`
     })) || [];
@@ -52,26 +56,38 @@ export function useSearchableDropdown({
     setError(null);
     
     try {
-      const payload = {
-        ...basePayload,
-        pageSize,
+      // const stringifyData = JSON.stringify({
+      //   context: {
+      //     MessageID: "12345",
+      //     MessageType: "Supplier Init",
+      //     UserID: "ramcouser",
+      //     OUID: "4",
+      //     Role: "ramcorole",
+      //   },
+      //   AdditionalFilter: [],
+      //   ...basePayload,
+      //   pageSize,
+      //   pageOffset: offset,
+      //   ...(query && { searchQuery: query })
+      // });
+
+      // const requestBody = {
+      //   RequestData: stringifyData,
+      // };
+
+      const params = {
+        messageType: basePayload?.messageType || "Supplier Init",
+        filters: [
+          ...(basePayload?.AdditionalFilter || []),
+          ...(query ? [{ FilterName: "searchQuery", FilterValue: query }] : []),
+        ],
         pageOffset: offset,
-        ...(query && { searchQuery: query })
+        pageSize: pageSize,
       };
 
-      const response = await fetch(apiEndpoint, {
-        method: method.toUpperCase(),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await quickOrderService.getMasterCommonData(params);
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      const data = response.data; // quickOrderService.getMasterCommonData already returns parsed data
       const newOptions = transformResponse ? transformResponse(data) : defaultTransform(data);
 
       if (reset) {
@@ -85,6 +101,12 @@ export function useSearchableDropdown({
       
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to fetch options');
+      // Axios errors have a 'response' object with status and data
+      if (axios.isAxiosError(err) && err.response) {
+        setError(`HTTP error! status: ${err.response.status} - ${err.response.data?.message || err.message}`);
+      } else {
+        setError(err instanceof Error ? err.message : 'Failed to fetch options');
+      }
       console.error('Error fetching dropdown options:', err);
     } finally {
       setLoading(false);
