@@ -1,13 +1,10 @@
 
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useTypedSelector } from '../hooks/useTypedSelector';
 import { ROUTES } from '../api/config';
 
 const Index = () => {
-  const { isAuthenticated } = useTypedSelector(state => state.auth);
-
-  console.log('🏠 Index page - authenticated:', isAuthenticated);
+  console.log('🏠 Index page - redirecting to dashboard');
 
   // For now, always redirect to dashboard
   // In production, this would check authentication and redirect accordingly
