@@ -290,37 +290,39 @@ export function ServersideFilter({
         multiSelect: filter.multiSelect // Pass multiSelect flag
       };
 
-      if (filter.type === 'select' && !filter.options) {
-        const fetchFilterOptions = async (searchTerm: string, page: number, pageSize: number) => {
-          // Use filter.messageType directly if available, otherwise fall back to map or warn
-          const messageType = filter?.messageType; 
-          if (!messageType) {
-            console.warn(`No messageType provided for filter key: ${filter.key}. Please define messageType in QuickOrderManagement.tsx`);
-            return { options: [], total: 0 };
-          }
+      // Remove this block as SearchableDropdown now handles fetching internally
+      // if (filter.type === 'select' && !filter.options) {
+      //   const fetchFilterOptions = async (searchTerm: string, page: number, pageSize: number) => {
+      //     // Use filter.messageType directly if available, otherwise fall back to map or warn
+      //     const messageType = filter?.messageType; 
+      //     if (!messageType) {
+      //       console.warn(`No messageType provided for filter key: ${filter.key}. Please define messageType in QuickOrderManagement.tsx`);
+      //       return { options: [], total: 0 };
+      //     }
           
-          try {
-            const response: any = await quickOrderService.getMasterCommonData({
-              messageType: messageType,
-              searchTerm: searchTerm,
-              page: page,
-              pageSize: pageSize,
-            });
-            const parsedResponse = JSON.parse(response?.data?.ResponseData || '[]');
-            const options = Array.isArray(parsedResponse) ? parsedResponse : [];
-            console.log('options: ', options);
-            // Assuming the API does not return total count directly for these combo APIs
-            // For now, we'll assume total is a large number if options are returned, to allow infinite scroll.
-            // In a real scenario, the backend should return `total`.
-            const total = options.length > 0 || page > 1 ? (options.length < pageSize ? (page - 1) * pageSize + options.length : (page * pageSize) + 1) : 0; // Heuristic
+      //     try {
+      //       const response: any = await quickOrderService.getMasterCommonData({
+      //         messageType: messageType,
+      //         searchTerm: searchTerm,
+      //         page: page,
+      //         pageSize: pageSize,
+      //       });
+      //       const parsedResponse = JSON.parse(response?.data?.ResponseData || '[]');
+      //       const options = Array.isArray(parsedResponse) ? parsedResponse : [];
+      //       console.log('options: ', options);
+      //       // Assuming the API does not return total count directly for these combo APIs
+      //       // For now, we'll assume total is a large number if options are returned, to allow infinite scroll.
+      //       // In a real scenario, the backend should return `total`.
+      //       const total = options.length > 0 || page > 1 ? (options.length < pageSize ? (page - 1) * pageSize + options.length : (page * pageSize) + 1) : 0; // Heuristic
 
-            return { options, total };
-          } catch (error) {
-            console.error(`Failed to fetch options for ${filter.key}:`, error);
-            return { options: [], total: 0 };
-          }
-        };
+      //       return { options, total };
+      //     } catch (error) {
+      //       console.error(`Failed to fetch options for ${filter.key}:`, error);
+      //       return { options: [], total: 0 };
+      //     }
+      //   };
 
+      if (filter.type === 'select' && !filter.options) {
         return (
           <div key={filter.key} className="space-y-1">
             <div className="text-xs font-medium text-gray-600 truncate">
@@ -330,11 +332,9 @@ export function ServersideFilter({
               placeholder={`Search ${filter.label}`}
               value={pendingFilters[filter.key]?.value || ''}
               onValueChange={(val) => handleFilterChange(filter.key, val ? { type: 'select', value: val } : undefined)}
-              apiPayload={{
-                messageType: "Filter Data",
-                AdditionalFilter: [
-                  { FilterName: "column", FilterValue: filter.key }
-                ]
+              apiPayload={{ // Pass the entire basePayload to the hook
+                messageType: filter.messageType, // Use dynamic messageType from filter
+                AdditionalFilter: [] // Initialize AdditionalFilter as empty
               }}
             />
             {pendingFilters[filter.key] && (

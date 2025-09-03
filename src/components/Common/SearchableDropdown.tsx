@@ -141,9 +141,9 @@ export const SearchableDropdown = ({
               )}
             </CommandEmpty>
             <CommandGroup className="bg-background">
-              {allOptions.map((option) => (
+              {allOptions.map((option:any, index:any) => (
                 <CommandItem
-                  key={option.value}
+                  key={option.id + '-'+index}
                   value={option.value}
                   onSelect={(currentValue) => {
                     onValueChange(currentValue === value ? "" : currentValue);
